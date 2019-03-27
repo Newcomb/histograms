@@ -1,39 +1,119 @@
 var data = d3.json('classData.json')
-
+var height=400;
+var width=600;
+var margin={
+ right:10,
+ left:20,
+ top:10,
+ bottom:10
+}
 var grades = function(data,day)
-{  data.then(function(d){
+{
+  data.then(function(d){
 
-    var grade = d.map(function(ele){
-      return ele.quizes[day-1];});
+var grade = d.map(function(ele)
+{
+  return ele.quizes[day-1].grade;
+});
 
-console.log(grade);
 var percentage=function(d)
 {
   return d.length/grade.length;
 }
 var xScale = d3.scaleLinear()
                .domain(d3.extent(grade))
-               .range([0, 600]);
+               .range([margin.left+15, width]);
 var binMaker=d3.histogram()
                .domain(xScale.domain())
                .thresholds(xScale.ticks(5));
 var bins=binMaker(grade);
+console.log(bins);
 var yScale=d3.scaleLinear()
              .domain([0,d3.max(bins,function(d){return percentage(d);})])
-             .range([400,0])
+             .range([height,margin.top])
              .nice();
+var cScale=d3.scaleOrdinal(d3.interpolateBuPu(0.5))
 var svg=d3.select("svg")
-          .attr("width",600)
-          .attr("height",400);
+          .attr("width",width+margin.left+margin.right)
+          .attr("height",height+margin.top+margin.bottom);
 svg.selectAll("rect")
    .data(bins)
    .enter()
    .append("rect")
+   .transition()
    .attr("x",function(d){return xScale(d.x0)})
-   .attr("width",function(d){return xScale(d.x1-.1)-xScale(d.x0);})
+   .attr("width",function(d){console.log(d.x1,d.x0); return xScale(d.x1-.1)-xScale(d.x0);})
    .attr("y",function(d){return yScale(percentage(d));})
-   .attr("height",function(d){return 400-yScale(percentage(d));});
+   .attr("height",function(d){return height-yScale(percentage(d));})
+   .attr("fill",function(d){
+     return cScale(d);
+   })
+var xAxis=d3.axisBottom(xScale);
+var yAxis=d3.axisLeft(yScale);
+ svg.append("g")
+    .classed("xAxis",true)
+    .call(xAxis)
+    .attr("transform","translate("+(margin.left-20)+","+(height+margin.top-10)+")");
+ svg.append("g")
+    .classed("yAxis",true)
+    .call(yAxis)
+    .attr("transform","translate("+(margin.left+15)+","+(margin.top-10)+")")
+
+}  ,function(err){console.log(err)})
+}
+///////////////////////////////////
+var change = function(data,day)
+{
+  data.then(function(d){
+
+var grade = d.map(function(ele)
+{
+  return ele.quizes[day-1].grade;
+});
+
+var percentage=function(d)
+{
+  return d.length/grade.length;
+}
+var xScale = d3.scaleLinear()
+               .domain(d3.extent(grade))
+               .range([margin.left+15, width]);
+var binMaker=d3.histogram()
+               .domain(xScale.domain())
+               .thresholds(xScale.ticks(5));
+var bins=binMaker(grade);
+console.log(bins);
+var yScale=d3.scaleLinear()
+             .domain([0,d3.max(bins,function(d){return percentage(d);})])
+             .range([height,margin.top])
+             .nice();
+var cScale=d3.scaleOrdinal(d3.interpolateBuPu(0.5))
+var svg=d3.select("svg")
+svg.selectAll("rect")
+   .data(bins)
+   .transition()
+   .attr("x",function(d){return xScale(d.x0)})
+   .attr("width",function(d){console.log(d.x1,d.x0); return xScale(d.x1-.1)-xScale(d.x0);})
+   .attr("y",function(d){return yScale(percentage(d));})
+   .attr("height",function(d){return height-yScale(percentage(d));})
+   .attr("fill",function(d){
+     return cScale(d);
+   })
+var xAxis=d3.axisBottom(xScale);
+var yAxis=d3.axisLeft(yScale);
+ svg.select(".xAxis")
+    .call(xAxis)
+    .attr("transform","translate("+(margin.left-20)+","+(height+margin.top-10)+")");
+ svg.select(".yAxis")
+    .call(yAxis)
+    .attr("transform","translate("+(margin.left+15)+","+(margin.top-10)+")")
 
 }  ,function(err){console.log(err)})
 }
 grades(data,1)
+d3.selectAll("button")
+  .on("click",function(){
+    var ele=d3.select(this)
+              .attr("id");
+    change(data,ele);
+  });
