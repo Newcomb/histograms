@@ -43,7 +43,23 @@
       button:active{
         background-color:#7a839e;
       }
+      #tooltip{
+        position:absolute;
+        width:80px;
+        padding:10px;
+    border-radius: 10px;
+    pointer-events:none;
+    background-color:white;
+    box-shadow:4px 4px 10px rgba(0,0,0,0.4);
 
+      }
+      .hidden{
+        display:none;
+      }
+      rect:hover{
+        stroke:teal;
+
+      }
     </style>
   </head>
   <body>
@@ -90,6 +106,10 @@
     <button id="36">Day 38</button>
     <button id="37">Day 39</button>
     <button id="38">Day 40</button>
+</div>
+<div id="tooltip" class="hidden">
+  <p>Size:<span id="num"></span></p>
+  <p>Grade:<span id="grade"></span></p>
 </div>
     <svg></svg>
     <script src="script.js"></script>

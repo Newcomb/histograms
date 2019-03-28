@@ -57,8 +57,29 @@ var yAxis=d3.axisLeft(yScale);
  svg.append("g")
     .classed("yAxis",true)
     .call(yAxis)
-    .attr("transform","translate("+(margin.left+15)+","+(margin.top-10)+")")
-
+    .attr("transform","translate("+(margin.left+15)+","+(margin.top-10)+")");
+    d3.selectAll("button")
+      .on("click",function(){
+        var ele=d3.select(this)
+                  .attr("id");
+        change(data,ele);
+      })
+      d3.selectAll("rect")
+      .on("mouseover",function(d){
+        var x=d3.select(this).attr("x");
+        var y=d3.select(this).attr("y");
+        d3.select("#tooltip")
+          .style("left",function(){return xScale(d.x0)+250})
+           .style("top",function(){return yScale(percentage(d));})
+           .select("#num")
+           .text(d.length);
+        d3.select("#grade")
+          .text(d.x0);
+          d3.select("#tooltip").classed("hidden",false);
+      })
+      .on("mouseout",function(){
+        d3.select("#tooltip").classed("hidden",true);
+      });
 }  ,function(err){console.log(err)})
 }
 ///////////////////////////////////
@@ -112,9 +133,3 @@ var yAxis=d3.axisLeft(yScale);
 }  ,function(err){console.log(err)})
 }
 grades(data,1)
-d3.selectAll("button")
-  .on("click",function(){
-    var ele=d3.select(this)
-              .attr("id");
-    change(data,ele);
-  });
