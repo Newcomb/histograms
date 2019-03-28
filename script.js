@@ -26,8 +26,7 @@ var xScale = d3.scaleLinear()
                .range([margin.left+15, width]);
 var binMaker=d3.histogram()
                .domain(xScale.domain())
-               .thresholds(xScale.ticks(11));
-console.log(xScale.ticks(10));
+               .thresholds(xScale.ticks(10));
 var bins=binMaker(grade);
 var yScale=d3.scaleLinear()
              .domain([0,d3.max(bins,function(d){return percentage(d);})])
@@ -81,7 +80,7 @@ var xScale = d3.scaleLinear()
                .range([margin.left+15, width]);
 var binMaker=d3.histogram()
                .domain(xScale.domain())
-               .thresholds(xScale.ticks(11));
+               .thresholds(xScale.ticks(10));
 var bins=binMaker(grade);
 
 var yScale=d3.scaleLinear()
