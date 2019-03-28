@@ -1,6 +1,7 @@
 var data = d3.json('classData.json')
 var height=400;
 var width=600;
+var padding=10;
 var margin={
  right:10,
  left:20,
@@ -21,18 +22,18 @@ var percentage=function(d)
   return d.length/grade.length;
 }
 var xScale = d3.scaleLinear()
-               .domain(d3.extent(grade))
+               .domain([1,11])
                .range([margin.left+15, width]);
 var binMaker=d3.histogram()
                .domain(xScale.domain())
-               .thresholds(xScale.ticks(5));
+               .thresholds(xScale.ticks(11));
+console.log(xScale.ticks(10));
 var bins=binMaker(grade);
-console.log(bins);
 var yScale=d3.scaleLinear()
              .domain([0,d3.max(bins,function(d){return percentage(d);})])
              .range([height,margin.top])
              .nice();
-var cScale=d3.scaleOrdinal(d3.interpolateBuPu(0.5))
+var cScale=d3.scaleOrdinal(d3.schemeSet3)
 var svg=d3.select("svg")
           .attr("width",width+margin.left+margin.right)
           .attr("height",height+margin.top+margin.bottom);
@@ -42,7 +43,7 @@ svg.selectAll("rect")
    .append("rect")
    .transition()
    .attr("x",function(d){return xScale(d.x0)})
-   .attr("width",function(d){console.log(d.x1,d.x0); return xScale(d.x1-.1)-xScale(d.x0);})
+   .attr("width",function(d){return width/10-padding;})
    .attr("y",function(d){return yScale(percentage(d));})
    .attr("height",function(d){return height-yScale(percentage(d));})
    .attr("fill",function(d){
@@ -76,24 +77,25 @@ var percentage=function(d)
   return d.length/grade.length;
 }
 var xScale = d3.scaleLinear()
-               .domain(d3.extent(grade))
+               .domain([1,11])
                .range([margin.left+15, width]);
 var binMaker=d3.histogram()
                .domain(xScale.domain())
-               .thresholds(xScale.ticks(5));
+               .thresholds(xScale.ticks(11));
 var bins=binMaker(grade);
-console.log(bins);
+
 var yScale=d3.scaleLinear()
              .domain([0,d3.max(bins,function(d){return percentage(d);})])
              .range([height,margin.top])
              .nice();
-var cScale=d3.scaleOrdinal(d3.interpolateBuPu(0.5))
+var cScale=d3.scaleOrdinal(d3.schemeSet3)
 var svg=d3.select("svg")
+
 svg.selectAll("rect")
    .data(bins)
    .transition()
    .attr("x",function(d){return xScale(d.x0)})
-   .attr("width",function(d){console.log(d.x1,d.x0); return xScale(d.x1-.1)-xScale(d.x0);})
+   .attr("width",function(d){return width/10-padding;})
    .attr("y",function(d){return yScale(percentage(d));})
    .attr("height",function(d){return height-yScale(percentage(d));})
    .attr("fill",function(d){
