@@ -33,7 +33,7 @@ var yScale=d3.scaleLinear()
              .domain([0,d3.max(bins,function(d){return percentage(d);})])
              .range([height,margin.top])
              .nice();
-var cScale=d3.scaleOrdinal(d3.schemeSet3)
+var xScale=d3.scaleOrdinal(d3.schemeSet3)
 var svg=d3.select("svg")
           .attr("width",width+margin.left+margin.right)
           .attr("height",height+margin.top+margin.bottom);
